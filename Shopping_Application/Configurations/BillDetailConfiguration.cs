@@ -13,7 +13,9 @@ namespace Shopping_Application.Configurations
             builder.Property(c => c.Quantity).HasColumnType("int");
             // Set khóa ngoại
             builder.HasOne(x => x.Bill).WithMany(y => y.BillDetails).
-                HasForeignKey(c => c.IDHD); 
+                HasForeignKey(c => c.IDHD);
+            builder.HasOne(x => x.Product).WithMany(y => y.BillDetails).
+                HasForeignKey(c => c.IDSP);
         }
     }
 }

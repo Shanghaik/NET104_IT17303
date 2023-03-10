@@ -9,7 +9,7 @@
         public int Status { get; set; }
         public virtual Role Role { get; set; }
         public virtual Cart Cart { get; set; }
-        public virtual List<Bill> Bills { get;}
+        public virtual List<Bill> Bills { get; set; }
 
     }
 }
