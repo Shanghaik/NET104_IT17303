@@ -9,7 +9,7 @@
         public int Status { get; set; }
         public string Supplier { get; set; }
         public string Description { get; set; }
-        public virtual List<BillDetail> BillDetails { get;}
-
+        public virtual List<BillDetail> BillDetails { get; set; }
+        public virtual List<CartDetail> CartDetails { get; set; }
     }
 }
