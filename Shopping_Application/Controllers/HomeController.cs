@@ -23,6 +23,28 @@ namespace Shopping_Application.Controllers
             return View();
         }
 
+        public IActionResult Test()
+        {
+            return View();
+        }
+        public IActionResult Redirect()
+        {
+            return RedirectToAction("Test"); // Thực hiện điều hướng đến 1 action nào đó
+        }
+
+        public IActionResult Show()
+        {
+            Product product = new Product() { 
+                Id = Guid.NewGuid(),
+                Name = "Hàng Tồn",
+                Price = -10000, 
+                AvailableQuantity = 1, 
+                Supplier = "Bome", 
+                Description = "Ko ai cần", 
+                Status = 0 };
+            return View(product);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
