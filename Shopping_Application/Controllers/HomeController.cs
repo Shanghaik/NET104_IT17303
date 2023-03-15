@@ -45,6 +45,35 @@ namespace Shopping_Application.Controllers
             return View(product);
         }
 
+        public IActionResult ShowListProduct()
+        {
+            List<Product> products = new List<Product>()
+            {
+                new Product() {Id = Guid.NewGuid(),
+                Name = "Chang nghiện Gêm",
+                Price = 0,
+                AvailableQuantity = 1,
+                Supplier = "Riot",
+                Description = "Game nhái liên quân",
+                Status = 0 },
+                new Product() {Id = Guid.NewGuid(),
+                Name = "Hà late",
+                Price = 1,
+                AvailableQuantity = 2,
+                Supplier = "Hu ce",
+                Description = "Trong 1 mối quan hệ phức tạp với ai?",
+                Status = 8 }
+            };
+            return View(products);
+        }
+        public IActionResult Details(Guid id)
+        {
+            ShopDbContext shopDbContext = new ShopDbContext();
+            var product = shopDbContext.Products.Find(id);
+            return View();
+        }
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
