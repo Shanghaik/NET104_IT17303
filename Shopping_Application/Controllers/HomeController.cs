@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Shopping_Application.IServices;
 using Shopping_Application.Models;
+using Shopping_Application.Services;
 using System.Diagnostics;
 
 namespace Shopping_Application.Controllers
@@ -7,10 +9,11 @@ namespace Shopping_Application.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
+        private readonly IProductServices productServices; // Interface
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+            productServices = new ProductServices(); // Class Service
         }
 
         public IActionResult Index()
@@ -47,24 +50,44 @@ namespace Shopping_Application.Controllers
 
         public IActionResult ShowListProduct()
         {
-            List<Product> products = new List<Product>()
-            {
-                new Product() {Id = Guid.NewGuid(),
-                Name = "Chang nghiện Gêm",
-                Price = 0,
-                AvailableQuantity = 1,
-                Supplier = "Riot",
-                Description = "Game nhái liên quân",
-                Status = 0 },
-                new Product() {Id = Guid.NewGuid(),
-                Name = "Hà late",
-                Price = 1,
-                AvailableQuantity = 2,
-                Supplier = "Hu ce",
-                Description = "Trong 1 mối quan hệ phức tạp với ai?",
-                Status = 8 }
-            };
+            List<Product> products = productServices.GetAllProducts();
             return View(products);
+        }
+        public IActionResult Create() // Khi ấn vào Create thì hiển thị View
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Create(Product p) // Thực hiện việc Tạo mới
+        {
+            if (productServices.CreateProduct(p))
+            {
+                return RedirectToAction("ShowListProduct");
+            }else return BadRequest();
+        }
+        [HttpGet]
+        public IActionResult Edit(Guid id) // Khi ấn vào Create thì hiển thị View
+        {
+            // Lấy Product từ database dựa theo id truyền vào từ route
+            Product p = productServices.GetProductById(id);
+            return View(p);
+        }
+       
+        public IActionResult Edit(Product p) // Thực hiện việc Tạo mới
+        {
+            if (productServices.UpdateProduct(p))
+            {
+                return RedirectToAction("ShowListProduct");
+            }
+            else return BadRequest();
+        }
+        public IActionResult Delete(Guid id)
+        {
+            if (productServices.DeleteProduct(id))
+            {           
+                return RedirectToAction("ShowListProduct");
+            }
+            else return View("Index");
         }
         public IActionResult Details(Guid id)
         {
