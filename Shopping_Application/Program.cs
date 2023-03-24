@@ -16,6 +16,11 @@ builder.Services.AddTransient<IProductServices, ProductServices>();//
  * Transient: Được khỏi tạo mỗi khi có yêu cầu, Mỗi request sẽ được nhận 1 
  * services khác nhau. Và được sử dụng với services có nhiều yêu cầu http
  */
+// Khai báo sử dụng Session với thời gian timeout là 30 giây
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(30);
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,7 +33,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseRouting();
 
 app.UseAuthorization();

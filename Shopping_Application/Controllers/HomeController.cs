@@ -23,6 +23,8 @@ namespace Shopping_Application.Controllers
 
         public IActionResult Privacy()
         {
+            string content = HttpContext.Session.GetString("Message");
+            ViewData["SessionData"] = content;
             return View();
         }
 
@@ -96,6 +98,36 @@ namespace Shopping_Application.Controllers
             return View();
         }
 
+        public IActionResult TransferData() // Đẩy dữ liệu qua các View
+        {
+            // Để truyền được dữ liệu sang View thì ngoài cách truyền trực tiếp
+            // 1 object model ta có thể sử dụng các cách sau:
+            /*
+             * Sử dụng ViewBag: Dữ liệu trong ViewBag là dữ liệu dynamic
+             * Không cần khởi tạo thành phần Viewbag mà đặt tên luôn
+             */
+            int[] marks = { 1, 2, 3, 4, 5, 6 };
+            List<string> characterNames = new List<string>() { 
+                "Nobita", "Shizuka", "Chaiko", "Jaien", "Doraemon", "Deki", "Xeko"
+            };
+            /*
+             * Sử dụng ViewData: Data sẽ được truyền tải dưới dạng Key-Value nhưng
+             * dữ liệu lại ở dạng Generic 
+             */
+            ViewBag.Marks = marks; // Gán dữ liệu vào ViewBag
+            ViewData["name"] = characterNames; // Gán dữ liệu vào ViewData
+            // Dữ liệu này dùng được ở chỉ 1 View
+            /*
+             * Sử dụng Session (Phiên làm việc), cơ chế key - value
+             */
+            string messages = "Đói, buồn ngủ, mệt mỏi";
+            // Truyền data vào Session (Không chuẩn)
+            HttpContext.Session.SetString("Message", messages);
+            // Lấy data từ Session
+            string content = HttpContext.Session.GetString("Message");
+            ViewData["SessionData"] = content;
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
