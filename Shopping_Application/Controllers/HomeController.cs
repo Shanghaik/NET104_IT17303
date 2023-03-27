@@ -106,8 +106,17 @@ namespace Shopping_Application.Controllers
         public IActionResult ShowListFromSession()
         {
             string JsonData = HttpContext.Session.GetString("Product"); // Lấy data từ Session
-            var products = JsonConvert.DeserializeObject<List<Product>>(JsonData);   
+            if(JsonData == null) {
+                return Content("Session đã bị xóa, trang web đã bị chiếm quyền kiểm soát");
+            }
+            var products = JsonConvert.DeserializeObject<List<Product>>(JsonData); 
             return View(products);  
+        }
+
+        public IActionResult DeleteSession()
+        {
+            HttpContext.Session.Remove("Product"); // Xóa 1 Session cụ thể nào đó
+            return RedirectToAction("ShowListFromSession");
         }
         public IActionResult TransferData() // Đẩy dữ liệu qua các View
         {
