@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using Shopping_Application.IServices;
 using Shopping_Application.Models;
 using Shopping_Application.Services;
@@ -53,6 +56,9 @@ namespace Shopping_Application.Controllers
         public IActionResult ShowListProduct()
         {
             List<Product> products = productServices.GetAllProducts();
+            // Thêm list này vào Session
+            HttpContext.Session.SetString("Product", JsonConvert.SerializeObject(products));
+            // JsonConvert.SerializeObject(products) => Chuyển từ List sang Json string
             return View(products);
         }
         public IActionResult Create() // Khi ấn vào Create thì hiển thị View
@@ -97,7 +103,12 @@ namespace Shopping_Application.Controllers
             var product = shopDbContext.Products.Find(id);
             return View();
         }
-
+        public IActionResult ShowListFromSession()
+        {
+            string JsonData = HttpContext.Session.GetString("Product"); // Lấy data từ Session
+            var products = JsonConvert.DeserializeObject<List<Product>>(JsonData);   
+            return View(products);  
+        }
         public IActionResult TransferData() // Đẩy dữ liệu qua các View
         {
             // Để truyền được dữ liệu sang View thì ngoài cách truyền trực tiếp
