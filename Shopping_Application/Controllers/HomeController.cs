@@ -101,7 +101,7 @@ namespace Shopping_Application.Controllers
         {
             ShopDbContext shopDbContext = new ShopDbContext();
             var product = shopDbContext.Products.Find(id);
-            return View();
+            return View(product);
         }
         public IActionResult ShowListFromSession()
         {
@@ -148,6 +148,40 @@ namespace Shopping_Application.Controllers
             ViewData["SessionData"] = content;
             return View();
         }
+
+        public IActionResult AddToCart(Guid id)
+        {
+            // Lấy được dữ liệu sản phẩm
+            var product = productServices.GetProductById(id);
+            // Lấy dữ liệu từ Cart (Trong Session)
+            var products = SessionServices.GetObjFromSession(HttpContext.Session, "Cart");
+            // Kiểm tra xem list dữ liệu đó có phần tử nào chưa...
+            if(products.Count == 0)
+            {
+                products.Add(product);  // Nếu không có sp nào thì add nó vào
+                                        // Sau đó gán lại giá trị vào trong Session
+                SessionServices.SetObjToSession(HttpContext.Session, "Cart", products);
+            }
+            else
+            {
+                if(SessionServices.CheckObjInList(id, products))
+                {
+                    return Content("List đã chứa sản phẩm này? Bạn định ăn cắp ư");
+                } else
+                {
+                    products.Add(product);  // Nếu chưa có sản phẩm đó trong list thì thêm vào
+                                            // Sau đó gán lại giá trị vào trong Session
+                    SessionServices.SetObjToSession(HttpContext.Session, "Cart", products);
+                }
+            }
+            return RedirectToAction("ShowCart");
+        }
+        public IActionResult ShowCart()
+        {
+            var products = SessionServices.GetObjFromSession(HttpContext.Session, "Cart");
+            return View(products);
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
