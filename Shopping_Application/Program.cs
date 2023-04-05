@@ -37,6 +37,7 @@ app.UseSession();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseStatusCodePagesWithReExecute("/Home/Index");
 
 app.MapControllerRoute(
     name: "default",
